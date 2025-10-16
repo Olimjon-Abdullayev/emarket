@@ -15,6 +15,8 @@ def proxy(endpoint):
     Example: https://yourapp.vercel.app/uzum/v1/fbs/orders
     """
 
+    if endpoint.startswith("api/"):
+    endpoint = endpoint.replace("api/", "", 1)
     target = f"{BASE_URL}/{endpoint}"
 
     headers = {
@@ -35,3 +37,4 @@ def proxy(endpoint):
         return jsonify({"error": "Unsupported method"}), 405
 
     return (resp.text, resp.status_code, {"Content-Type": resp.headers.get("Content-Type", "application/json")})
+
