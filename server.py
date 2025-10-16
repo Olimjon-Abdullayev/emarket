@@ -14,8 +14,10 @@ def proxy(endpoint):
 
     target = f"{BASE_URL}/{endpoint}"
     headers = {
-        "Authorization": UZUM_KEY,
-        "Content-Type": "application/json"
+    "Authorization": f"Bearer {UZUM_KEY}",
+    "Content-Type": "application/json"
+    }
+
     }
 
     try:
@@ -41,3 +43,4 @@ def root():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
