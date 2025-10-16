@@ -8,11 +8,15 @@ BASE_URL = "https://api-seller.uzum.uz/api/seller-openapi"
 
 @app.route("/uzum/<path:endpoint>", methods=["GET", "POST", "PUT", "DELETE"])
 def proxy(endpoint):
+    # Clean up URL path
     if endpoint.startswith("api/"):
         endpoint = endpoint.replace("api/", "", 1)
 
     target = f"{BASE_URL}/{endpoint}"
-    headers = {"Authorization": UZUM_KEY, "Content-Type": "application/json"}
+    headers = {
+        "Authorization": UZUM_KEY,
+        "Content-Type": "application/json"
+    }
 
     try:
         if request.method == "GET":
@@ -27,10 +31,13 @@ def proxy(endpoint):
             return jsonify({"error": "Unsupported method"}), 405
 
         return (resp.text, resp.status_code, {"Content-Type": resp.headers.get("Content-Type", "application/json")})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/")
+def root():
+    return jsonify({"status": "Uzum Proxy API running ✅"})
 
-# 👇 DO NOT include a custom handler; Vercel finds `app` automatically
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
